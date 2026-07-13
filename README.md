@@ -20,6 +20,7 @@ The data used by NetrunnerDB is at https://github.com/NetrunnerDB/netrunner-card
 - Go into it the directory `netrunnerdb`
 - Install Composer (see https://getcomposer.org/download/)
 - Install the vendor libs: `composer install`. You'll be asked to input your database connection parameter.
+- (composer install--ignore-platform-req=php) if required
 - Create the database: `php bin/console doctrine:database:create`
 - If the above command fails, edit app/config/parameters.yml and try again
 - Create the tables: `php bin/console doctrine:schema:update --force`
