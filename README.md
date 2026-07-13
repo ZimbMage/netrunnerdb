@@ -9,6 +9,9 @@ The data used by NetrunnerDB is at https://github.com/NetrunnerDB/netrunner-card
 ## Prerequisite
 
 - you need a recent apache/php/mysql stack
+- (looks like it needs php 7.x)
+- (needs composer 2.2)
+
 - your php module must be configured with `mbstring.internal_encoding = UTF-8`
 
 ## How to install
@@ -19,8 +22,8 @@ The data used by NetrunnerDB is at https://github.com/NetrunnerDB/netrunner-card
 - Also, clone the data repository (or your own fork) at https://github.com/NetrunnerDB/netrunner-cards-json
 - Go into it the directory `netrunnerdb`
 - Install Composer (see https://getcomposer.org/download/)
+- (composer self-update --2.2)
 - Install the vendor libs: `composer install`. You'll be asked to input your database connection parameter.
-- (composer install--ignore-platform-req=php) if required
 - Create the database: `php bin/console doctrine:database:create`
 - If the above command fails, edit app/config/parameters.yml and try again
 - Create the tables: `php bin/console doctrine:schema:update --force`
