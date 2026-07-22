@@ -279,14 +279,7 @@ function get_card_legality_icons(card) {
         add_icon('banned');
     }
 
-    // Check if set has rotated
-    if (NRDB.settings && NRDB.settings.getItem('check-rotation')) {
-        var rotated_cycles = _.map(NRDB.data.cycles.find( { "rotated": true } ), 'code');
-        var cycle = card.pack.cycle_code;
-        if (rotated_cycles.indexOf(cycle) !== -1) {
-            add_icon('rotated');
-        }
-    }
+    // SoCal Eternal has no rotation, so cards are never flagged as rotated.
 
     if (result.length) {
         return ' <span class="builder-legality-indicators">' + result.join(' ') + '</span> ';

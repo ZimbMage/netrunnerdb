@@ -11,7 +11,7 @@
     'show-suggestions': 3,
     'buttons-behavior': 'cumulative',
     'sort-order': 'type',
-    'check-rotation': true,
+    'check-rotation': false,
     'card-limits': 'legal',
 
     'pnp-cut-marks': 'None',
