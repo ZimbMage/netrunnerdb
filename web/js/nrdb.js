@@ -830,23 +830,9 @@ function check_deck_limit() {
 }
 
 function check_rotation() {
-    var rotated_cycles = _.map(NRDB.data.cycles.find( { "rotated": true } ), 'code');
-    var used_cycles = _.map(NRDB.data.cards.find({ indeck: { '$gt': 0 } }), 'pack.cycle_code');
-
-    var intersect = rotated_cycles.filter(function(n) {
-        return used_cycles.indexOf(n) !== -1;
-    });
-
-    if (intersect.length > 0) {
-		let num_old_with_new_versions = convert_to_recent(false /* update */);
-		if (num_old_with_new_versions > 0) {
-           $('#rotated').html('Deck contains ' + num_old_with_new_versions + ' rotated cards with new versions - <a href="javascript:convert_to_recent(true /*update*/)" title="Replace ' + num_old_with_new_versions + ' rotated cards with their post-rotation counterparts.">click to update</a>').show();
-		} else {
-           $('#rotated').html('Deck contains rotated cards with no post-rotation versions.').show();
-		}
-    } else {
-        $('#rotated').text('').hide();
-    }
+    // SoCal Eternal is an Eternal-based format with no rotation, so there are
+    // never "rotated" cards to flag. Always keep the notice hidden.
+    $('#rotated').text('').hide();
 }
 
 function convert_to_recent(update) {
