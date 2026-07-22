@@ -56,7 +56,6 @@
           <li><code>m</code> – memory usage</li>
           <li><code>y</code> – quantity printed in set</li>
           <li><code>r</code> – release date <em>(not available in deckbuilding)</em></li>
-          <li><code>z</code> – rotation <em>(not available in deckbuilding)</em></li>
           <li><code>e</code> – set</li>
           <li><code>d</code> – side</li>
           <li><code>p</code> – strength</li>
@@ -99,7 +98,6 @@
           <li><code>r&lt;2013-01-01</code> searches for all cards released up to Jan 1, 2013</li>
           <li><code>d:r|c</code> searches for all Runner or Corp cards</li>
           <li><code>x:&#34;the Corp loses 1 credit&#34;</code> returns Amina, Corporate &#34;Grant&#34;, and Lamprey</li>
-          <li><code>d:corp z:current</code> returns all Corp cards in the cycles valid for the latest rotation</li>
         </ul>
       </div>
     </div>
@@ -310,26 +308,6 @@
       </div>
     </div>
 
-    <div class="syntax-panel">
-      <h3 class="header">Rotation (<code>z</code>)</h3>
-      <h4 class="subheader">Searching based on inclusion in a rotation</h4>
-      <div class="body row">
-        <p>This operand restricts results to cards legal for a given rotation. There are several additional options: <code>current</code>, <code>latest</code>, <code>standard</code>, and <code>startup</code>. <code>current</code> and <code>latest</code> only differ when there is a not-yet-active rotation. <code>standard</code> is an alias for <code>current</code>. Rotation can also specify a specific rotation.</p>
-        <p>Valid options are:</p>
-        <ul>
-          <li><code>current</code></li>
-          <li><code>latest</code></li>
-          <li><code>standard</code></li>
-          <li><code>startup</code></li>
-        {% set active_found = false %}
-        {% set latest_found = false %}
-        {% set today = "now"|date("Y-m-d") %}
-        {% for rotation in rotations %}
-          <li><code>{{ rotation.code }}</code>{% if (active_found == false) and (today >= rotation.getDateStart|date("Y-m-d")) %} (current){% set active_found = true %}{% endif %}{% if latest_found == false %} (latest){% set latest_found = true %}{% endif %}</li>
-        {% endfor %}
-        </ul>
-      </div>
-    </div>
 
     <div class="syntax-panel">
       <h3 class="header">Set (<code>e</code>)</h3>

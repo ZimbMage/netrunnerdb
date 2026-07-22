@@ -903,12 +903,6 @@ formats:
     defaults:
         _controller: AppBundle:Formats:get
 
-rotation:
-    path: /{_locale}/rotation
-    methods: [GET]
-    defaults:
-        _controller: AppBundle:Rotation:get
-
 rules_text_updates:
     path: /{_locale}/rules_text_updates
     methods: [GET]
