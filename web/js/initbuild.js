@@ -85,54 +85,28 @@ $(function() {
       }
     }
 
-    // Update the ID list when the format is changed
+    // Update the ID list when the format is changed.
+    // Two options: 'eternal' = SoCal Eternal (hide cards banned by the active
+    // ban list) and 'all' (show everything, with legality indicators).
     function updateFormat(format) {
       // Update settings
       $(`.option-format[value!="${format}"]`).removeClass('active-setting');
       $(`.option-format[value="${format}"]`).addClass('active-setting');
       // Filter cards
       $('.identity').each(function(id, i) {
-          // All (only show legality indicators on all)
+          // All: show everything and surface the legality indicators.
           if (format === 'all') {
             $(this).removeClass('hidden-format');
-            $(this).find('.legality-indicator').show ();
+            $(this).find('.legality-indicator').show();
             return;
-          } else {
-            $(this).find('.legality-indicator').hide ();
           }
-          // Other formats
-          let visible = true;
-          // Startup
-          if (format === 'startup') {
-            visible = STARTUP_PACKS.keys().some(p => $(this).hasClass('pack-' + p));
-          }
-          // Standard
-          else if (format === 'standard') {
-            visible = !($(this).hasClass('banned') || $(this).hasClass('rotated'));
-          }
-          // Eternal
-          else if (format === 'eternal') {
-            visible = true
-          }
-          // Draft
-          if ($(this).hasClass('pack-draft')) {
-            visible = format === 'draft';
-          }
-          else if (format === 'draft') {
-            visible = false
-          }
-          // Other (neutral Gateway IDs and the multiplayer NAPD ID)
-          if (['24001', '30076', '30077'].includes($(this).attr('data-code'))) {
-            visible = format === 'other';
-          }
-          else if (format === 'other') {
-            visible = false
-          }
-          // Apply effect
-          if (visible)
-            $(this).removeClass('hidden-format');
-          else
+          // SoCal Eternal: hide banned identities, no indicators needed.
+          $(this).find('.legality-indicator').hide();
+          if ($(this).hasClass('banned')) {
             $(this).addClass('hidden-format');
+          } else {
+            $(this).removeClass('hidden-format');
+          }
       });
     }
 
@@ -177,6 +151,6 @@ $(function() {
 
     // Filter on page refresh
     updateSide($('#switch-side').attr('value') == 'runner' ? 'corp' : 'runner');
-    updateFormat('standard');
+    updateFormat('eternal');
     updateMisc();
 });

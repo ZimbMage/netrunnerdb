@@ -1,7 +1,6 @@
 {% extends '/layout.html.twig' %}
 
 {% block head %}
-{% include '/Scripts/nsg_formats.html.twig' %}
 <style>
   /* Hide unmatched identities */
   .hidden-side, .hidden-faction, .hidden-format, .hidden-misc {
@@ -47,11 +46,7 @@
     <div style="display: flex; flex-wrap: wrap;">
       <div style="flex-grow: 1;" id="format-options">
         <div>Format:
-          <a href="#" class="option-format" value="startup">Startup</a> |
-          <a href="#" class="option-format" value="standard">Standard</a> |
-          <a href="#" class="option-format" value="eternal">Eternal</a> |
-          <a href="#" class="option-format" value="draft">Draft</a> |
-          <a href="#" class="option-format" value="other">Other</a> |
+          <a href="#" class="option-format" value="eternal">SoCal Eternal</a> |
           <a href="#" class="option-format" value="all">All</a>
         </div>
       </div>
@@ -82,14 +77,13 @@
   <div class="list-group">
     {% for identity in identities %}
       {% set banned = identity.code in banned_cards|keys %}
-      {% set rotated = identity.pack.cycle.rotated %}
       <a href="{{ path('deck_initbuild', {card_code:identity.code}) }}"
-         class="identity list-group-item side-{{ identity.side.code }} faction-{{ identity.faction.code }} pack-{{ identity.pack.code }} {% if rotated %}rotated{% endif %} {% if banned %}banned{% endif %} {% if identity.faction.isMini %}mini-faction{% endif %}"
+         class="identity list-group-item side-{{ identity.side.code }} faction-{{ identity.faction.code }} pack-{{ identity.pack.code }} {% if banned %}banned{% endif %} {% if identity.faction.isMini %}mini-faction{% endif %}"
          data-code="{{ identity.code }}">
         <svg class="typeIcon" aria-label="{{ identity.faction.name }}" data-icon-color="{{ identity.faction.code }}" style="transform:translateY(2px);margin-right:0.5em;"><use xlink:href="/images/icons.svg#faction-{{ identity.faction.code }}"></use></svg>
         <span class="name">{{ identity.title(app.request.locale) }}</span>
         <span class="small">({{ identity.pack.name }})</span>
-        <span style="margin-left: 4px;" class="legality-indicator {% if rotated %}legality-rotated{% endif %} {% if banned %}legality-banned{% endif %}"></span>
+        <span style="margin-left: 4px;" class="legality-indicator {% if banned %}legality-banned{% endif %}"></span>
       </a>
     {% endfor %}
   </div>
