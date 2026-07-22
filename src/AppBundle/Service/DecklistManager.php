@@ -868,19 +868,8 @@ class DecklistManager
             return false;
         }
 
-        // card rotation
-        $countDql = "SELECT COUNT(DISTINCT s)"
-            . " FROM AppBundle:Decklistslot s"
-            . " JOIN AppBundle:Card c WITH s.card=c"
-            . " JOIN AppBundle:Pack p WITH c.pack=p"
-            . " JOIN AppBundle:Cycle y WITH p.cycle=y"
-            . " WHERE y.rotated=true"
-            . " AND s.decklist=?1";
-        $countQuery = $this->entityManager->createQuery($countDql)->setParameter(1, $decklist);
-        $count = $countQuery->getSingleResult()[1];
-        if ($count) {
-            return false;
-        }
+        // SoCal Eternal is Eternal-based with no rotation, so rotation never
+        // affects decklist legality — only card limits and the active ban list.
 
         // mwl
         $countDql = "SELECT COUNT(DISTINCT l)"
