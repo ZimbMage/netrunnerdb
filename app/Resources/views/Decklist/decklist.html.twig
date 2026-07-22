@@ -24,7 +24,7 @@ NRDB.user.params.decklist_id = Decklist.id;
 <div class="container decklist">
 
 {% if not decklist.is_legal %}
-    <div class="alert alert-warning" role="alert">This decklist is not legal for tournament play currently, due to <a href="https://nullsignal.games/players/supported-formats/">Card Errata, Rotation or Legality</a>.</div>
+    <div class="alert alert-warning" role="alert">This decklist is not currently legal in <a href="{{ path('banlists') }}">SoCal Eternal</a>, due to the ban list.</div>
 {% endif %}
 <div class="row">
     <div class="col-xs-12 panel-group">
@@ -325,7 +325,7 @@ NRDB.user.params.decklist_id = Decklist.id;
 
 <h3 class="username">
     <a href="{{ path('user_profile_view', {_locale:app.request.locale,user_id:decklist.user_id,user_name:decklist.username|e('url')}) }}" class="{{ decklist.usercolor }}">{{ decklist.username }}</a>
-    {% if decklist.donation > 0 %}<span class="glyphicon glyphicon-gift donator" title="NetrunnerDB Gracious Donator"></span>{% endif %}
+    {% if decklist.donation > 0 %}<span class="glyphicon glyphicon-gift donator" title="SanSanDB Supporter"></span>{% endif %}
     <small title="User Reputation">{{ decklist.reputation }}</small>
 </h3>
 <div id="deck-description">{{ decklist.description|raw }}</div>
@@ -343,7 +343,7 @@ NRDB.user.params.decklist_id = Decklist.id;
     <div class="collapse{% if not comment.hidden %} in{% endif %}" id="div-comment-{{ comment.id }}">
         <span class="comment-date">{{ comment.date_creation|date('j M Y') }}</span>
         <a href="{{ path('user_profile_view', {_locale:app.request.locale,user_id:comment.user_id,user_name:comment.author|e('url')}) }}" class="comment-author username {{ comment.authorcolor }}">{{ comment.author }}</a>
-        {% if comment.donation > 0 %}<span class="glyphicon glyphicon-gift donator" title="NetrunnerDB Gracious Donator"></span>{% endif %}
+        {% if comment.donation > 0 %}<span class="glyphicon glyphicon-gift donator" title="SanSanDB Supporter"></span>{% endif %}
         <div class="comment-text">{{ comment.text|raw }}</div>
     </div>
 </td></tr>

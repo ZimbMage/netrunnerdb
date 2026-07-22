@@ -591,7 +591,7 @@ class SocialController extends Controller
             ];
             foreach ($spool as $email => $view) {
                 $message = \Swift_Message::newInstance()
-                                         ->setSubject("[NetrunnerDB] New comment")
+                                         ->setSubject("[SanSanDB] New comment")
                                          ->setFrom(["noreply@netrunnerdb.com" => $user->getUsername()])
                                          ->setTo($email)
                                          ->setBody($this->renderView($view, $email_data), 'text/html');
@@ -1023,7 +1023,7 @@ class SocialController extends Controller
         $reviews = $entityManager->getRepository('AppBundle:Review')->findBy(['user' => $user]);
         $nbreviews = count($reviews);
 
-        $description = "A NetrunnerDB member since " . $user->getCreation()->format('d F Y');
+        $description = "A SanSanDB member since " . $user->getCreation()->format('d F Y');
         if ($nbdecklists == 1) {
             $description .= "One published decklist\n";
         } else {
@@ -1300,7 +1300,7 @@ class SocialController extends Controller
 
         return $this->render('/Default/donators.html.twig', [
             'pagetitle' => 'The Gracious Donators',
-            'pagedescription' => "NetrunnerDB wouldn't be the same without them. Many, many thanks.",
+            'pagedescription' => "The people and projects SanSanDB is built on.",
             'donators'  => $users,
         ], $response);
     }
@@ -1331,7 +1331,7 @@ class SocialController extends Controller
 
         return $this->render('/Activity/activity.html.twig', [
             'pagetitle'       => 'Activity',
-            'pagedescription' => 'The latest activity from NetrunnerDB users.',
+            'pagedescription' => 'The latest activity from SanSanDB users.',
             'items_by_day'    => $items_by_day,
             'max'             => $days,
         ], $response);

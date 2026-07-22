@@ -83,7 +83,7 @@ class DecklistsController extends Controller
             case 'halloffame':
                 $result = $decklistManager->halloffame($start, $limit);
                 $pagetitle = "Hall of Fame";
-                $pagedescription = "Browse the most loved decklists from all of NetrunnerDB history.";
+                $pagedescription = "Browse the most loved decklists from all of SanSanDB history.";
                 break;
             case 'hottopics':
                 $result = $decklistManager->hottopics($start, $limit);

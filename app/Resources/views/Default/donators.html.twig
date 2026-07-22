@@ -1,24 +1,36 @@
 {% extends '/layout.html.twig' %}
 
+{% block title %}Credits{% endblock %}
+
 {% block body %}
 
 <div class="container decklists">
     <div class="row">
         <div class="col-md-12">
-            <h1>The Gracious Donators</h1>
-            <p class="lead">NetrunnerDB wouldn't be the same without them. Many, many thanks!!!</p>
-            <p>This website is ad-free due to the generous donations of our generous supporters. Thank you all!</p>
-            <p>To become a Donator and help run this and all the Null Signal Games sites, you can <a href="https://ko-fi.com/nullsignalgames">support Null Signal Games on Ko-Fi</a>.</p>
+            <h1>Credits &amp; Thanks</h1>
+            <p class="lead">SanSanDB stands on the shoulders of the people who built Netrunner's tools and kept its cards alive.</p>
+
+            <p>SanSanDB is a community deckbuilder for the SanSan South (San Diego) Netrunner meta and its <a href="{{ path('formats') }}">SoCal Eternal</a> format. It is a fork of <a href="https://netrunnerdb.com/">NetrunnerDB</a>.</p>
+
+            <h2>Thank you</h2>
+            <ul>
+                <li><strong><a href="//twitter.com/alsciende">@alsciende</a></strong> &mdash; who designed and originally built NetrunnerDB.</li>
+                <li><strong><a href="https://nullsignal.games/">Null Signal Games</a></strong> &mdash; who continue to develop and support Android: Netrunner and maintain NetrunnerDB and the card data this site is built from.</li>
+                <li>The wider <strong>NetrunnerDB</strong> community of contributors.</li>
+                <li>Everyone in the <strong>SanSan South</strong> Discord who plays, brews, and tests in SoCal Eternal.</li>
+            </ul>
+
+            {% if donators is defined and donators is not empty %}
+            <h2>Community Supporters</h2>
             <ul>
                 {% for donator in donators %}
                 <li>
                     <a href="{{ path('user_profile_view', {user_id:donator.id,user_name:donator.username|e('url')}) }}" class="username {{ donator.faction }}">{{ donator.username }}</a>
-                    <span class="glyphicon glyphicon-gift donator" title="NetrunnerDB Gracious Donator"></span>
                 </li>
                 {% endfor %}
             </ul>
+            {% endif %}
         </div>
-
     </div>
 </div> <!-- .container -->
 

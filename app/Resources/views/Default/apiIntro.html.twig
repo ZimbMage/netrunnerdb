@@ -10,23 +10,13 @@
 <p><tt>{{ absolute_url(path('netrunnerdb_index')) }}</tt> can be queried via an http API.</p>
 <p>This API is provided for use in deckbuilders, card databases, tournament managers, and other tools that complement playing Android: Netrunner.</p>
 <p>All texts are copyrighted by Fantasy Flight Games and/or Null Signal Games.</p>
+<p>SanSanDB runs the 2.0 API inherited from <a href="https://netrunnerdb.com/">NetrunnerDB</a>. Note that card and deck data here reflect the SanSan South instance and the SoCal Eternal ban list, not netrunnerdb.com.</p>
 
-<hr>
-<div style="margin: 0 32px">
-  <h3>Version 3.0</h3>
-  <p>A new API is being developed to replace the current version (2.0). Some notable improvements include:</p>
-  <ul>
-    <li>Cards are a separate entity from their printings, reducing content duplication</li>
-    <li>A proper represenation of play formats and rotation</li>
-    <li>A built-in search feature</li>
-  </ul>
-  <p>A preview version of this API and its documentation can be found here: <a href="https://api-preview.netrunnerdb.com">api-preview.netrunnerdb.com</a>.
-</div>
 <hr>
 
 <h3>Public and OAuth2</h3>
 <p>There are two kinds of API endpoints: <b>public</b> and <b>private</b>. Public API endpoints are available to everyone, while private API endpoints use OAuth2 and are only available to registered clients (applications).</p>
-<p>If you want access, please send an email to <a href="mailto:webdev@nullsignal.games">webdev@nullsignal.games</a> describing your project, including the Application Name, the Application Website, and a Redirect URI (you can read <a href="https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2#application-registration">this awesome page</a> for more info on OAuth2) and we'll send you credentials.</p>
+<p>If you want private/OAuth2 access for a tool, reach out via the SanSan South Discord or the project's <a href="https://github.com/ZimbMage/netrunnerdb">GitHub</a>.</p>
 
 <h3>Documentation</h3>
 <p>The documentation can be found here: <a href="{{ absolute_url(path('nelmio_api_doc_index')) }}">{{ absolute_url(path('nelmio_api_doc_index')) }}</a>.</p>

@@ -75,8 +75,8 @@ class IndexController extends Controller
         return $this->render(
             'Default/index.html.twig',
             [
-                'pagetitle'       => "Android: Netrunner Cards and Deckbuilder",
-                'pagedescription' => "Build your deck for Android: Netrunner, the card game run by Null Signal Games, originally released by Fantasy Flight Games. Browse the cards and the thousand of decklists submitted by the community. Publish your own decks and get feedback.",
+                'pagetitle'       => "SanSanDB — SoCal Eternal Deckbuilder",
+                'pagedescription' => "SanSanDB is the deckbuilder for SanSan South's SoCal Eternal format: the full Eternal card pool for Android: Netrunner with the strongest cards banned. Build decks, browse the community's decklists, and get feedback.",
                 'decklists'       => $decklists_recent,
                 'decklist'        => $decklist,
                 'url'             => $request->getRequestUri(),

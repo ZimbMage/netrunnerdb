@@ -1,171 +1,57 @@
 {% extends '/layout.html.twig' %}
 
-{% block title %}Ban Lists{% endblock %}
+{% block title %}Ban List{% endblock %}
 
 {% block body %}
-{% include '/Scripts/api.html.twig' %}
-{% include '/Scripts/panels.html.twig' %}
 <div class="container" id="banlists">
   <h1>{{ block('title') }}</h1>
   <div>
-    <p>There are currently three official <a href="{{ path('formats') }}">formats</a> supported by Null Signal Games: Startup, Standard, and Eternal. This page displays the ban lists for each.</p>
+    <p>SanSan South plays one <a href="{{ path('formats') }}">format</a>: <strong>SoCal Eternal</strong> &mdash; the full Eternal card pool with the strongest ~25% of cards banned. This page lists every banned card.</p>
     <h2>Explanation</h2>
     <ul>
-      <li><b>Banned:</b> You cannot include any copies of a banned card in your deck.</li>
-      <li><b>Points:</b> Including any number of copies of a card with points in Eternal adds points to your deck. Eternal decks must have 7 points or fewer.</li>
-      <li><b>Restricted (deprecated):</b> You may include up to a full playset of only one restricted card.</li>
-      <li><b>Universal Influence (deprecated):</b> Cards with universal influence cost additional influence to include in a deck.</li>
-      <li><b>Identity Influence Reduction (deprecated):</b> These cards reduce your identity's influence limit by 1 for each copy (to a minimum of 1).</li>
+      <li><b>Banned:</b> You cannot include any copies of a banned card in your deck. Everything not on this list is legal.</li>
     </ul>
-    <p>See <a href="https://nullsignal.games/players/supported-formats/">Null Signal Games' Supported Formats page</a> for more information.</p>
+    <p>Legality is enforced automatically in the deckbuilder. If you have a deck open, banned cards are flagged as you build.</p>
   </div>
   <hr>
-  <div id="restrictions-root" role="tabpanel" style="display: none;">
-    <!-- Nav tabs -->
-    <ul class="nav nav-pills nav-justified" role="tablist" style="margin-bottom:20px">
-      <li role="presentation" {% if format == 'startup' %}class="active"{% endif %}><a href="#tab-pane-startup" role="tab" data-toggle="tab">Startup</a></li>
-      <li role="presentation" {% if format == 'standard' or format == null %}class="active"{% endif %}><a href="#tab-pane-standard" role="tab" data-toggle="tab">Standard</a></li>
-      <li role="presentation" {% if format == 'eternal' %}class="active"{% endif %}><a href="#tab-pane-eternal" role="tab" data-toggle="tab">Eternal</a></li>
-    </ul>
-    <hr>
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <div role="tabpanel" class="tab-pane{% if format == 'startup' %} active{% endif %}" id="tab-pane-startup"></div>
-      <div role="tabpanel" class="tab-pane{% if format == 'standard' or format == null %} active{% endif %}" id="tab-pane-standard"></div>
-      <div role="tabpanel" class="tab-pane{% if format == 'eternal' %} active{% endif %}" id="tab-pane-eternal"></div>
+
+  {% if activeMwl %}
+    <h2>{{ activeMwl.name }}</h2>
+    <p>
+      <a href="{{ path('cards_find', {'q': 'b!' ~ activeMwl.code}) }}">{{ (corpCards|length) + (runnerCards|length) }} cards banned</a>.
+      Active as of <strong>{{ activeMwl.dateStart|date('Y-m-d') }}</strong>.
+    </p>
+
+    <div class="container-fluid">
+      <div class="row flex-fill">
+        <div class="col-md-6">
+          <h3>Corp Cards</h3>
+          {% if corpCards is empty %}
+            <p>No Corp cards are banned.</p>
+          {% else %}
+            <ul>
+              {% for card in corpCards %}
+                <li><a href="{{ path('cards_zoom', {card_code: card.code}) }}">{{ card.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+        <div class="col-md-6">
+          <h3>Runner Cards</h3>
+          {% if runnerCards is empty %}
+            <p>No Runner cards are banned.</p>
+          {% else %}
+            <ul>
+              {% for card in runnerCards %}
+                <li><a href="{{ path('cards_zoom', {card_code: card.code}) }}">{{ card.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      </div>
     </div>
-  </div>
-
-  <noscript>
-    <p class="text-center">Please enable JavaScript to view this page fully.</p>
-    <hr>
-  </noscript>
+  {% else %}
+    <p>No ban list is currently configured.</p>
+  {% endif %}
 </div>
-
-<script>
-// Takes a list of cards and an object mapping card IDs to integers
-// Returns a new object with the cards in place of their IDs
-function makeCardMap(cards, obj) {
-  const points = new Map();
-  for (const [card_id, p] of Object.entries(obj)) {
-    if (!(p in points)) {
-      points[p] = [];
-    }
-    points[p].push(card_id)
-  }
-  return Object.keys(points).reduce(function(newObj, key) {
-    newObj[key] = cards.filter(card => points[key].includes(card.id));
-    return newObj
-  }, {});
-}
-
-// Creates a list of cards with the given header
-function generateList(header, cards, pre='') {
-  if (pre.length > 0) {
-    pre = `<li>${pre}</li>`;
-  }
-  return cards.reduce((text, card) => {
-    return text + `<li><a href="${cardToLatestPrintingLink(card)}">${card.attributes.title}</a></li>`;
-  }, `<li><strong>${header}</strong><ul>${pre}`) + '</ul></li>';
-}
-
-async function buildBanlistsView() {
-  // Unhide the restrictions view (accounting for browsers with JS disabled)
-  $('#restrictions-root').show();
-
-  // Add a temporary loading indicator
-  $('.tab-pane').append(loading_icon);
-
-  // Load data from API
-  const desiredFormats = ['startup', 'standard', 'eternal'];
-  const [formats, cards, restrictions] = await Promise.all([
-    fetchData(`{{ v3_api_url }}/api/v3/public/formats`).then(fs => fs.filter(f => desiredFormats.includes(f.id))),
-    fetchCards(`?include=card_subtypes&filter[search]=in_restriction:true`, 250).then(splitBySide),
-    fetchData(`{{ v3_api_url }}/api/v3/public/restrictions?sort=-date_start&page[size]=100`)
-  ]);
-
-  // Remove the loading indicator
-  $('.temp-loading').remove();
-
-  const query_format = {% if format %}'{{ format | e('js') }}'{% else %}null{% endif %};
-  const query_restriction = {% if restriction %}'{{ restriction | e('js') }}'{% else %}null{% endif %};
-
-  // Add each format to the page
-  formats.forEach(f => {
-    const jqPane = $(`#tab-pane-${f.id}`);
-    const formatRestrictions = restrictions.filter(r => f.attributes.restriction_ids.includes(r.id));
-    if (formatRestrictions.length == 0) {
-      jqPane.append(`<p>No cards are currently banned in ${f.attributes.name}. Have a blast!</p>`);
-    } else {
-      const panelList = new PanelList(jqPane, null, false, "toggle", "search");
-      formatRestrictions.forEach(r => {
-        const active = r.id == f.attributes.active_restriction_id;
-        const visible = active || r.id == formatRestrictions[0].id;
-
-        // Create panel
-        const panel = panelList.createPanel(r.id, visible);
-        panel.addHeader(r.attributes.name);
-        panel.addSubheader(`<a href=${Routing.generate('cards_find', {type:'find', 'view':'list', 'q':`b!${r.id.replaceAll('_', '-')}`})}>${r.attributes.size} cards</a>. Start Date: ${r.attributes.date_start}.`);
-
-        // Get content data
-        const v = r.attributes.verdicts;
-        // Lists (bans, restricted cards, global penalty cards)
-        const [corpBan, runnerBan] = cards.map(cs => cs.filter(card => v.banned?.includes(card.id)));
-        const [corpRes, runnerRes] = cards.map(cs => cs.filter(card => v.restricted?.includes(card.id)));
-        const [corpPen, runnerPen] = cards.map(cs => cs.filter(card => v.global_penalty?.includes(card.id)));
-        // Mappings (points, universal faction costs)
-        const [corpUFC, runnerUFC] = cards.map(cs => makeCardMap(cs, v.universal_faction_cost));
-        const [corpPts, runnerPts] = cards.map(cs => makeCardMap(cs, v.points));
-
-        // Add body
-        panel.addBody();
-        panel.addBodyContent(`<div class="container-fluid"><div class="row flex-fill"><div class="col-md-6"><h3>Corp Cards</h3><ul class="corp"></ul></div><div class="col-md-6"><h3>Runner Cards</h3><ul class="runner"></ul></div></div></div>`);
-
-        // Generate corp restrictions
-        const jqCorp = panel.body.find('ul.corp');
-        // Bans (banned subtypes (i.e. currents) are removed beforehand to reduce length)
-        if (corpBan.length > 0) {
-          if (r.attributes.banned_subtypes.length > 0) { // NOTE: currently hardcoded to only be currents
-            const pre = `All cards with the <strong><a href="${Routing.generate('cards_find', {type:'find', 'view':'list', 'q':'s:current d:corp'})}">Current</a></strong> subtype.`;
-            jqCorp.append(generateList('Banned', removeCurrents(corpBan), pre));
-          } else {
-            jqCorp.append(generateList('Banned', corpBan));
-          }
-        }
-        // The others
-        if (corpRes.length > 0) { jqCorp.append(generateList('Restricted', corpRes)); }
-        Object.keys(corpUFC).sort().reverse().forEach(p => { jqCorp.append(generateList(`+${p} Universal Influence`, corpUFC[p])); });
-        if (corpPen.length > 0) { jqCorp.append(generateList('Identity Influence Reduction', corpPen)); }
-        Object.keys(corpPts).sort().reverse().forEach(p => { jqCorp.append(generateList(`${p} ${p == 1 ? 'Point' : 'Points'}`, corpPts[p])); });
-
-        // Generate runner restrictions
-        const jqRunner = panel.body.find('ul.runner');
-        // Bans (banned subtypes (i.e. currents) are removed beforehand to reduce length)
-        if (runnerBan.length > 0) {
-          if (r.attributes.banned_subtypes.length > 0) { // NOTE: currently hardcoded to only be currents
-            const pre = `All cards with the <strong><a href="${Routing.generate('cards_find', {type:'find', 'view':'list', 'q':'s:current d:runner'})}">Current</a></strong> subtype.`;
-            jqRunner.append(generateList('Banned', removeCurrents(runnerBan), pre));
-          } else {
-            jqRunner.append(generateList('Banned', runnerBan));
-          }
-        }
-        // The others
-        if (runnerRes.length > 0) { jqRunner.append(generateList('Restricted', runnerRes)); }
-        Object.keys(runnerUFC).sort().reverse().forEach(p => { jqRunner.append(generateList(`+${p} Universal Influence`, runnerUFC[p])); });
-        if (runnerPen.length > 0) { jqRunner.append(generateList('Identity Influence Reduction', runnerPen)); }
-        Object.keys(runnerPts).sort().reverse().forEach(p => { jqRunner.append(generateList(`${p} ${p == 1 ? 'Point' : 'Points'}`, runnerPts[p])); });
-
-        // Fill in searchbox specific format/restriction pair passed in.
-        if (f.id == query_format && query_restriction) {
-          jqPane.find('.panel-search input').val(query_restriction).keyup();
-        }
-      });
-    }
-  });
-}
-
-// Create the banlists view on load
-buildBanlistsView();
-</script>
-
 {% endblock %}

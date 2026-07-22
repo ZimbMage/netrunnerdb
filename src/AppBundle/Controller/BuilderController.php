@@ -177,7 +177,7 @@ class BuilderController extends Controller
             '/Builder/directimport.html.twig',
             [
                 'pagetitle' => "Import a deck",
-                'pagedescription' => "Import a deck from outside of NetrunnerDB.",
+                'pagedescription' => "Import a deck from outside of SanSanDB.",
                 'list_mwl'  => $list_mwl,
             ],
 

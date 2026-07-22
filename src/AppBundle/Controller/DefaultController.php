@@ -139,7 +139,7 @@ class DefaultController extends Controller
         $response->setMaxAge($this->getParameter('long_cache'));
 
         return $this->render('/Default/about.html.twig', [
-            "pagetitle" => "About NetrunnerDB",
+            "pagetitle" => "About SanSanDB",
         ], $response);
     }
 
