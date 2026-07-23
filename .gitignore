@@ -24,3 +24,7 @@
 /web/runner.json
 /web/update_log.txt
 .DS_Store
+
+# Prod deployment config — lives on the droplet only, contains live secrets. Never commit.
+/docker/prod-parameters.yml
+*.orig
